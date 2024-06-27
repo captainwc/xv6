@@ -1,0 +1,7 @@
+{
+    "C_Cpp.intelliSenseEngine": "default",
+    "files.associations": {
+        "*.S": "gas",
+        "user.h": "c"
+    }
+}
