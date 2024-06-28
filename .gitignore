@@ -22,5 +22,6 @@ xv6.out*
 submissions/
 
 .vscode/*
+tests/*
 
 core
