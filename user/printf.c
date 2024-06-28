@@ -2,8 +2,6 @@
 #include "kernel/stat.h"
 #include "user/user.h"
 
-#include <stdarg.h>
-
 static char digits[] = "0123456789ABCDEF";
 
 static void
