@@ -20,7 +20,6 @@ int main()
         read(fd[PIPE_READ], buff, BUFF_SIZE);
         fprintf(1, "%d: received %s\n", getpid(), buff);
         close(fd[PIPE_READ]);
-        memset(buff, 0, BUFF_SIZE);
         write(fd[PIPE_WRITE], "pong", 4);
         close(fd[PIPE_WRITE]);
     }
