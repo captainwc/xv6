@@ -17,10 +17,9 @@ int main()
     memset(buff, 0, BUFF_SIZE);
     if (pid == 0)
     {
-        read(fd[PIPE_READ], buff, BUFF_SIZE);
+        read(fd[PIPE_READ], buff, BUFF_SIZE);  // xv6的管道目前看来，读不完不会清空
         fprintf(1, "%d: received %s\n", getpid(), buff);
         close(fd[PIPE_READ]);
-        memset(buff, 0, BUFF_SIZE);
         write(fd[PIPE_WRITE], "pong", 4);
         close(fd[PIPE_WRITE]);
     }
