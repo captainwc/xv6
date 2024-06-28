@@ -2,7 +2,55 @@
 
 #define PRINT_ERROR_POSITION 1
 
-// sk
+// string util
+
+// return base_name's start pos to origin path
+const char *base_name(const char *path)
+{
+    const char *p;
+    for (p = path + strlen(path); p >= path && *p != '/'; p--)
+        ;
+    p++;
+    // int len = strlen(p);
+    // char *ret = (char *)malloc(len);
+    // memcpy(ret, p, len);
+    return p;
+}
+
+// is str begin with substr yes -> 1 AND no -> 0
+int begin_with(const char *str, const char *substr)
+{
+    while (*str != 0 && *substr != 0)
+    {
+        if (*str == *substr)
+        {
+            str++;
+            substr++;
+        }
+        else
+        {
+            return 0;
+        }
+    }
+    return *substr == 0;
+}
+
+// first position substr appeared in str, no -> NULL AND yes -> start pos
+const char *strstr(const char *str, const char *substr)
+{
+    const char *pos = str;
+    while (*pos != 0)
+    {
+        if (begin_with(pos, substr))
+        {
+            return pos;
+        }
+        pos++;
+    }
+    return (const char *)0;
+}
+
+// debug
 void sk_perror(const char *file, const char *func, int line, const char *fmt, ...)
 {
     va_list ap;
@@ -19,7 +67,7 @@ int open_checked(const char *file, const char *func, int line, const char *openf
     int ret = open(openfile, mode);
     if (ret < 0)
     {
-        sk_perror(file, func, line, "failed open file: %s\n", file);
+        sk_perror(file, func, line, "failed open file: %s\n", openfile);
     }
     return ret;
 }
@@ -30,8 +78,8 @@ int fstat_checked(const char *file, const char *func, int line, int fd, struct s
     if (ret < 0)
     {
         sk_perror(file, func, line, "cannot stat file: %d\n", fd);
-        close(fd);
     }
+    return ret;
 }
 
 int read_checked(const char *file, const char *func, int line, int fd, void *buf, int num)
@@ -40,7 +88,6 @@ int read_checked(const char *file, const char *func, int line, int fd, void *buf
     if (ret < 0)
     {
         sk_perror(file, func, line, "read failed, fd: %d\n", fd);
-        close(fd);
     }
     return ret;
 }
@@ -51,7 +98,6 @@ int write_checked(const char *file, const char *func, int line, int fd, const vo
     if (ret < 0)
     {
         sk_perror(file, func, line, "write failed, fd: %d\n", fd);
-        close(fd);
     }
     return ret;
 }

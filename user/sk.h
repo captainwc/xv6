@@ -1,6 +1,12 @@
 #include "kernel/types.h"
 #include "user/user.h"
 
+// string utils
+const char *base_name(const char *path);
+int begin_with(const char *str, const char *substr);
+const char *strstr(const char *str, const char *substr);
+
+// wrapper
 void sk_perror(const char *file, const char *func, int line, const char *fmt, ...);
 int open_checked(const char *file, const char *func, int line, const char *openfile, int mode);
 int fstat_checked(const char *file, const char *func, int line, int fd, struct stat *st);
