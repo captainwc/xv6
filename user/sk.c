@@ -2,7 +2,90 @@
 
 #define PRINT_ERROR_POSITION 1
 
-// string util
+// ----------------------- util --------------------------
+
+// copy bytes between [vstart, vend] to vdst
+void copyrange(void *vdst, const void *vstart, const void *vend)
+{
+    const char *start = vstart;
+    const char *end = vend;
+    char *dst = vdst;
+
+    while (start <= end)
+    {
+        memcpy(dst++, start++, 1);
+    }
+}
+
+// free every pointer in p
+void free_arr(void **p, int num)
+{
+    for (int i = 0; i < num; i++)
+    {
+        free(p[i]);
+    }
+}
+
+// --------------------- string util ----------------------------
+
+// ATTENTION: this func use malloc, you should free every pointers using "free_many";
+// return num of the splited str
+int split(char **ret, const char *str, char sep)
+{
+    int count = 0;
+    for (int i = 0; str[i]; i++)
+    {
+        if (str[i] == sep)
+        {
+            count++;
+        }
+    }
+    if (count == 0)
+        return 0;
+    count += 2;
+    ret = (char **)malloc(count * sizeof(char *));
+
+    const char *start = str;
+    int cnt = 0;
+    int i = 0;
+    while (*str)
+    {
+        if (*str == sep)
+        {
+            ret[i] = (char *)malloc(cnt * sizeof(char) + 1);
+            memcpy(ret[i], start, cnt);
+            ret[i][cnt] = 0;
+            cnt = 0;
+            start = str + 1;
+        }
+        str++;
+        cnt++;
+    }
+    ret[count - 1] = 0;
+    return count - 1;
+}
+
+// read line from fd
+// 0 -> EOF, n -> line length, negtive -> error
+int getline(int fd, char *buf, const int line_size)
+{
+    char ch;
+    int rret;
+    for (int i = 0; (rret = READ(fd, &ch, 1)) == 1; i++)
+    {
+        if (i >= line_size - 1)
+        {
+            return -2;
+        }
+        buf[i] = ch;
+        if (ch == '\n')
+        {
+            buf[i] = 0;
+            return i;
+        }
+    }
+    return rret;
+}
 
 // return base_name's start pos to origin path
 const char *base_name(const char *path)
@@ -56,9 +139,19 @@ void sk_perror(const char *file, const char *func, int line, const char *fmt, ..
     va_list ap;
     va_start(ap, fmt);
 #if PRINT_ERROR_POSITION
-    fprintf(2, "【%s, %s, %d】", file, func, line);
+    fprintf(2, "[%s, %s, %d][ERROR] ", file, func, line);
 #endif
     vprintf(2, fmt, ap);
+}
+
+void sk_log(const char *file, const char *func, int line, const char *fmt, ...)
+{
+    va_list ap;
+    va_start(ap, fmt);
+#if PRINT_ERROR_POSITION
+    fprintf(1, "[%s, %s, %d][DEBUG] ", file, func, line);
+#endif
+    vprintf(1, fmt, ap);
 }
 
 // checked system call
@@ -110,4 +203,14 @@ int pipe_checked(const char *file, const char *func, int line, int *fd)
         sk_perror(file, func, line, "pipe failed\n");
     }
     return ret;
+}
+
+int fork_checked(const char *file, const char *func, int line)
+{
+    int pid = fork();
+    if (pid == -1)
+    {
+        sk_perror(file, func, line, "fork failed\n");
+    }
+    return pid;
 }

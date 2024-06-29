@@ -7,6 +7,7 @@
 #include "kernel/syscall.h"
 #include "kernel/memlayout.h"
 #include "kernel/riscv.h"
+#include "user/tests.h"
 
 //
 // Tests xv6 system calls.  usertests without arguments runs them all
@@ -2592,6 +2593,10 @@ countfree()
   return n;
 }
 
+void sktests(){
+    test_split();
+}
+
 // run each test in its own process. run returns 1 if child's exit()
 // indicates success.
 int
@@ -2622,8 +2627,9 @@ main(int argc, char *argv[])
 {
   int continuous = 0;
   char *justone = 0;
-
-  if(argc == 2 && strcmp(argv[1], "-c") == 0){
+  if(argc == 1){
+    sktests();
+  }else if(argc == 2 && strcmp(argv[1], "-c") == 0){
     continuous = 1;
   } else if(argc == 2 && strcmp(argv[1], "-C") == 0){
     continuous = 2;
@@ -2694,6 +2700,7 @@ main(int argc, char *argv[])
     {iref, "iref"},
     {forktest, "forktest"},
     {bigdir, "bigdir"}, // slow
+    {sktests, "sktests"},
     { 0, 0},
   };
 
