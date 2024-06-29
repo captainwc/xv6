@@ -6,12 +6,23 @@
 
 void test_split()
 {
-    char **buf = 0;
-    int num = split(buf, "hello, world, haha", ',');
-    PERROR("Splited to %d\n", num);
-    for (int i = 0; i < num; i++)
+    LOG("[BEGIN]: split test\n");
+    char str[] = "this is a test string";
+    char *arr[100];
+    int count = split(arr, str, ' ');
+
+    for (int i = 0; i < count; i++)
     {
-        PERROR("%d:%s\n", i, *buf[i]);
+        printf("%s\n", arr[i]);
     }
-    free_arr((void **)buf, num);
+    LOG("[END]: split test\n");
+}
+
+void test_exec()
+{
+    LOG("[BEGIN]: exec test\n");
+    char *args[] = {"echo", "xx", 0};
+    LOG("BEGIN exec\n");
+    exec("echo", args);
+    LOG("END exec");
 }

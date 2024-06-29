@@ -9,7 +9,8 @@ int name_match(const char *name, const char *pattern)
     {
         return 1;
     }
-    if (strstr(name, pattern) != 0)
+    // if (strstr(name, pattern) != 0)
+    if (strcmp(name, pattern) == 0)
     {
         return 1;
     }

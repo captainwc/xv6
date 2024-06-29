@@ -10,7 +10,7 @@ void copyrange(void *vdst, const void *vstart, const void *vend);
 const char *base_name(const char *path);
 int begin_with(const char *str, const char *substr);
 const char *strstr(const char *str, const char *substr);
-int split(char **ret, const char *str, char sep);
+int split(char *ret[], char *str, char sep);
 
 // wrapper
 void sk_perror(const char *file, const char *func, int line, const char *fmt, ...);

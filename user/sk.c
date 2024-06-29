@@ -28,41 +28,27 @@ void free_arr(void **p, int num)
 
 // --------------------- string util ----------------------------
 
-// ATTENTION: this func use malloc, you should free every pointers using "free_many";
 // return num of the splited str
-int split(char **ret, const char *str, char sep)
+int split(char *ret[], char *str, char sep)
 {
+    char *start = str;
+    char *end = str;
     int count = 0;
-    for (int i = 0; str[i]; i++)
-    {
-        if (str[i] == sep)
-        {
-            count++;
-        }
-    }
-    if (count == 0)
-        return 0;
-    count += 2;
-    ret = (char **)malloc(count * sizeof(char *));
 
-    const char *start = str;
-    int cnt = 0;
-    int i = 0;
-    while (*str)
+    while (*end != '\0')
     {
-        if (*str == sep)
+        if (*end == ' ')
         {
-            ret[i] = (char *)malloc(cnt * sizeof(char) + 1);
-            memcpy(ret[i], start, cnt);
-            ret[i][cnt] = 0;
-            cnt = 0;
-            start = str + 1;
+            *end = '\0';
+            ret[count] = start;
+            count++;
+            start = end + 1;
         }
-        str++;
-        cnt++;
+        end++;
     }
-    ret[count - 1] = 0;
-    return count - 1;
+    ret[count++] = start;
+    ret[count + 1] = 0;
+    return count;
 }
 
 // read line from fd

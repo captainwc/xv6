@@ -2594,6 +2594,7 @@ countfree()
 }
 
 void sktests(){
+    // test_exec();
     test_split();
 }
 
@@ -2629,6 +2630,7 @@ main(int argc, char *argv[])
   char *justone = 0;
   if(argc == 1){
     sktests();
+    exit(0);
   }else if(argc == 2 && strcmp(argv[1], "-c") == 0){
     continuous = 1;
   } else if(argc == 2 && strcmp(argv[1], "-C") == 0){
