@@ -3,6 +3,8 @@
 #include "kernel/stat.h"
 #include "user/user.h"
 
+// arg1: 要跟踪的系统调用号掩码， 比如 trace 2就是跟踪fork，因为 1 << SYS_fork = 2
+
 int
 main(int argc, char *argv[])
 {
@@ -10,7 +12,7 @@ main(int argc, char *argv[])
   char *nargv[MAXARG];
 
   if(argc < 3 || (argv[1][0] < '0' || argv[1][0] > '9')){
-    fprintf(2, "Usage: %s mask command\n", argv[0]);
+    fprintf(2, "Usage: %s [mask] [command]\n", argv[0]);
     exit(1);
   }
 

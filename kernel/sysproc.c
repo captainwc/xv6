@@ -95,3 +95,17 @@ sys_uptime(void)
   release(&tickslock);
   return xticks;
 }
+
+uint64
+sys_trace(void)
+{
+  int arg;
+  argint(0, &arg);
+  if(arg <= 0){
+    myproc()->tracemask = 2147483647;
+  }else{
+    myproc()->tracemask = arg;
+  }
+  //TODO: what should I return?
+  return 0;
+}
