@@ -2,6 +2,8 @@
 // kernel stacks, page-table pages,
 // and pipe buffers. Allocates whole 4096-byte pages.
 
+// kmem->freelist是一个空闲块链表的头指针，分配和释放都是从头开始的
+
 #include "types.h"
 #include "param.h"
 #include "memlayout.h"
@@ -28,6 +30,31 @@ kinit()
 {
   initlock(&kmem.lock, "kmem");
   freerange(end, (void*)PHYSTOP);
+}
+
+int
+totalblocks()
+{
+  int totalnum = 0;
+  char *start = (char *)PGROUNDUP((uint64)end);
+  char *end = (char *)PHYSTOP;
+  totalnum = (end - start + 1);
+  return totalnum;
+}
+
+int
+freeblocks()
+{
+  struct run* p;
+  int freenums = 0;
+  p = kmem.freelist;
+  while(p)
+  {
+    ++freenums;
+    p = p->next;
+  }
+  freenums *= PGSIZE;
+  return freenums;
 }
 
 void

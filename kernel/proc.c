@@ -152,6 +152,22 @@ freeproc(struct proc *p)
   p->state = UNUSED;
 }
 
+int
+procnum()
+{
+  int unused = 0;
+
+  struct proc *p;
+  for(p = proc; p < &proc[NPROC]; p++) {
+    acquire(&p->lock);
+    if(p->state == UNUSED) {
+        ++unused;
+    }
+    release(&p->lock);
+  }
+  return NPROC - unused;
+}
+
 // Create a user page table for a given process,
 // with no user memory, but with trampoline pages.
 pagetable_t
