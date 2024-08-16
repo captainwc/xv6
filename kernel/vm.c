@@ -60,6 +60,8 @@ kvminithart()
 // that corresponds to virtual address va.  If alloc!=0,
 // create any required page-table pages.
 //
+// 3级页表，9 + 9 + 9 + 12
+//
 // The risc-v Sv39 scheme has three levels of page-table
 // pages. A page-table page contains 512 64-bit PTEs.
 // A 64-bit virtual address is split into five fields:
@@ -438,5 +440,29 @@ copyinstr(pagetable_t pagetable, char *dst, uint64 srcva, uint64 max)
     return 0;
   } else {
     return -1;
+  }
+}
+
+void vmprint(pagetable_t pagetable) {
+    printf("page table %p\n", pagetable);
+    for (int i = 0; i < 512; ++i) {
+    pte_t pte1 = pagetable[i];
+    if (pte1 & PTE_V) {
+        uint64 level1 = PTE2PA(pte1);
+        printf("..%d: pte %p pa %p\n", i, pte1, level1);
+        for (int j = 0; j < 512; ++j) {
+            pte_t pte2 = ((pagetable_t)level1)[j];
+            if(pte2 & PTE_V){
+                uint64 level2 = PTE2PA(pte2);
+                printf(".. ..%d: pte %p pa %p\n",j,pte2,level2);
+                for(int k = 0; k < 512; ++k){
+                    pte_t pte3 = ((pagetable_t)level2)[k];
+                    if(pte3 & PTE_V){
+                        printf(".. .. ..%d: pte %p pa %p\n", k, pte3, PTE2PA(pte3));
+                    }
+                }
+            }
+        }
+    }
   }
 }
